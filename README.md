@@ -1,4 +1,7 @@
 # ezDorks
+
+https://gig4ndr3s.github.io/ezDorks/
+
 Herramienta en HTML que reúne etiquetas de Google Dorks para que resulte visual y sencillo de realizar, sin tener que depender de cheatsheets de puro texto (aunque es recomendable compaginarlas).
 
 La página contiene dos paneles, el izquierdo con las etiquetas y el derecho con la búsqueda generada y con ejemplos de búsquedas interesantes.
