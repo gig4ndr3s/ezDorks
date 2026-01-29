@@ -318,25 +318,33 @@
         }
 
         .query-display {
-            background: #F5F7F8;
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-base);
-            padding: 12px;
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 12px;
-            word-break: break-all;
-            color: var(--color-text);
-            min-height: 50px;
-            margin: 15px 0;
-            border-left: 3px solid var(--color-primary);
-            font-weight: 600;
-        }
+    background: #F5F7F8;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-base);
+    padding: 12px;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 12px;
+    word-break: break-all;
+    color: var(--color-text);
+    min-height: 50px;
+    margin: 15px 0;
+    border-left: 3px solid var(--color-primary);
+    font-weight: 600;
+}
 
-        @media (prefers-color-scheme: dark) {
-            .query-display {
-                background: #0F1419;
-            }
-        }
+@media (prefers-color-scheme: dark) {
+    .query-display {
+        background: #0F1419;
+    }
+}
+
+[data-theme="dark"] .query-display {
+    background: #0F1419;
+}
+
+[data-theme="light"] .query-display {
+    background: #F5F7F8;
+}
 
         .empty-query {
             color: var(--color-text-secondary);
@@ -582,8 +590,8 @@
                             <strong>link:</strong>
                             <span>Enlaces a sitio</span>
                         </div>
-                        <div class="operator-btn" onclick="insertOperator('\"')">
-                            <strong>\" \"</strong>
+                        <div class="operator-btn" onclick="insertOperator('\\"')">
+                            <strong>\\" \\"</strong>
                             <span>Frase exacta</span>
                         </div>
                         <div class="operator-btn" onclick="insertOperator('-')">
@@ -658,7 +666,7 @@
                                 <div class="example-title">PDFs en GitHub</div>
                                 site:github.com filetype:pdf
                             </div>
-                            <div class="example-dork" onclick="loadExample('intitle:\"index of\" \"parent directory\"')">
+                            <div class="example-dork" onclick="loadExample('intitle:\\"index of\\" \\"parent directory\\"')">
                                 <div class="example-title">Directorios indexados</div>
                                 intitle:"index of" "parent directory"
                             </div>
@@ -666,7 +674,7 @@
                                 <div class="example-title">Páginas de login</div>
                                 inurl:login OR inurl:signin intitle:login
                             </div>
-                            <div class="example-dork" onclick="loadExample('site:.gov filetype:pdf \"confidential\"')">
+                            <div class="example-dork" onclick="loadExample('site:.gov filetype:pdf \\"confidential\\"')">
                                 <div class="example-title">Documentos confidenciales .gov</div>
                                 site:.gov filetype:pdf "confidential"
                             </div>
@@ -680,15 +688,15 @@
                     <div id="osint" class="examples-content">
                         <div class="help-section">
                             <h4>🕵️ OSINT & Espionaje Avanzado</h4>
-                            <div class="example-dork" onclick="loadExample('site:linkedin.com intitle:\"CEO\" OR intitle:\"CTO\"')">
+                            <div class="example-dork" onclick="loadExample('site:linkedin.com intitle:\\"CEO\\" OR intitle:\\"CTO\\"')">
                                 <div class="example-title">Ejecutivos en LinkedIn</div>
                                 site:linkedin.com intitle:"CEO" OR intitle:"CTO"
                             </div>
-                            <div class="example-dork" onclick="loadExample('intitle:\"webcam\" OR intitle:\"network camera\" inurl:view')">
+                            <div class="example-dork" onclick="loadExample('intitle:\\"webcam\\" OR intitle:\\"network camera\\" inurl:view')">
                                 <div class="example-title">Webcams expuestas</div>
                                 intitle:"webcam" OR intitle:"network camera" inurl:view
                             </div>
-                            <div class="example-dork" onclick="loadExample('filetype:xls OR filetype:xlsx \"password\" OR \"user\"')">
+                            <div class="example-dork" onclick="loadExample('filetype:xls OR filetype:xlsx \\"password\\" OR \\"user\\"')">
                                 <div class="example-title">Hojas Excel con credenciales</div>
                                 filetype:xls OR filetype:xlsx "password" OR "user"
                             </div>
@@ -700,15 +708,15 @@
                                 <div class="example-title">Archivos de log públicos</div>
                                 filetype:log inurl:access.log OR inurl:error.log
                             </div>
-                            <div class="example-dork" onclick="loadExample('intitle:\"AWS\" OR intitle:\"Amazon\" filetype:pdf')">
+                            <div class="example-dork" onclick="loadExample('intitle:\\"AWS\\" OR intitle:\\"Amazon\\" filetype:pdf')">
                                 <div class="example-title">Documentos AWS expuestos</div>
                                 intitle:"AWS" OR intitle:"Amazon" filetype:pdf
                             </div>
-                            <div class="example-dork" onclick="loadExample('site:twitter.com OR site:instagram.com \"@\" filetype:pdf')">
+                            <div class="example-dork" onclick="loadExample('site:twitter.com OR site:instagram.com \\"@\\" filetype:pdf')">
                                 <div class="example-title">Social media en documentos</div>
                                 site:twitter.com OR site:instagram.com "@" filetype:pdf
                             </div>
-                            <div class="example-dork" onclick="loadExample('\"email:\" OR \"user:\" filetype:sql')">
+                            <div class="example-dork" onclick="loadExample('\\"email:\\" OR \\"user:\\" filetype:sql')">
                                 <div class="example-title">Bases de datos SQL expuestas</div>
                                 "email:" OR "user:" filetype:sql
                             </div>
@@ -716,7 +724,7 @@
                                 <div class="example-title">Backups de sitios gubernamentales</div>
                                 inurl:backup OR inurl:.bak OR inurl:.zip site:.gov
                             </div>
-                            <div class="example-dork" onclick="loadExample('\"api_key\" OR \"private_key\" OR \"secret\" filetype:txt')">
+                            <div class="example-dork" onclick="loadExample('\\"api_key\\" OR \\"private_key\\" OR \\"secret\\" filetype:txt')">
                                 <div class="example-title">Claves API públicas</div>
                                 "api_key" OR "private_key" OR "secret" filetype:txt
                             </div>
@@ -729,12 +737,16 @@
 
     <script>
         function switchTab(tab) {
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            // Hide all tab contents in the main editor area
+            document.querySelectorAll('#simple, #advanced').forEach(el => el.classList.remove('active'));
+            
+            // Reset all main tab buttons
+            document.querySelectorAll('.tabs:first-of-type .tab-btn').forEach(el => el.classList.remove('active'));
 
             // Show selected tab
             document.getElementById(tab).classList.add('active');
+            
+            // Mark the clicked button as active
             event.target.classList.add('active');
 
             updatePreview();
@@ -868,7 +880,7 @@
             const operators = ['site:', 'intitle:', 'inurl:', 'intext:', 'filetype:', 'cache:', 'link:', 'allintitle:', 'allinurl:', 'allintext:', '-', 'OR', 'AND'];
             let count = 0;
             operators.forEach(op => {
-                const regex = new RegExp(op.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+                const regex = new RegExp(op.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&'), 'g');
                 count += (query.match(regex) || []).length;
             });
             document.getElementById('operatorCount').textContent = count;
@@ -911,9 +923,22 @@
         }
 
         function loadExample(dork) {
+            // Cambiar a modo avanzado
             document.getElementById('advancedQuery').value = dork;
-            switchTab('advanced');
+            
+            // Cambiar la pestaña del editor a "Modo Avanzado"
+            document.getElementById('simple').classList.remove('active');
+            document.getElementById('advanced').classList.add('active');
+            
+            // Marcar el botón correcto como activo
+            const tabButtons = document.querySelectorAll('.card:first-child .tabs .tab-btn');
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabButtons[1].classList.add('active'); // Index 1 = "Modo Avanzado"
+            
+            // Actualizar preview
             updatePreview();
+            
+            // Scroll suave al display de la query
             document.getElementById('queryDisplay').scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -941,12 +966,14 @@
             // Hide all example contents
             document.querySelectorAll('.examples-content').forEach(el => el.classList.remove('active'));
             
-            // Hide all tab buttons and reset
+            // Hide all tab buttons in examples section
             const tabButtons = document.querySelectorAll('#examples .tabs .tab-btn');
             tabButtons.forEach(el => el.classList.remove('active'));
 
-            // Show selected tab and set active button
+            // Show selected tab
             document.getElementById(tab).classList.add('active');
+            
+            // Mark button as active
             event.target.classList.add('active');
         }
 
