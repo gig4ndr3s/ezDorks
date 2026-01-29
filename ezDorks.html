@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ezDorks by gig4ndr3s - Google Dorks OSINT Tool</title>
+    <style>
+        :root {
+            --color-primary: #21808D;
+            --color-primary-hover: #1D7480;
+            --color-primary-active: #1A6873;
+            --color-background: #FCF8F9;
+            --color-surface: #FFFFFF;
+            --color-text: #134252;
+            --color-text-secondary: #626C7C;
+            --color-border: #D8DCDF;
+            --color-success: #22C956;
+            --color-error: #C01530;
+            --color-warning: #A84B2F;
+            --color-focus-ring: rgba(33, 128, 141, 0.4);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+            --radius-base: 8px;
+            --radius-lg: 12px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-primary: #3FC8DC;
+                --color-primary-hover: #2DB8CC;
+                --color-primary-active: #1BA8BC;
+                --color-background: #0F1419;
+                --color-surface: #1A1F26;
+                --color-text: #E0E6ED;
+                --color-text-secondary: #9BA5B3;
+                --color-border: #2D333C;
+                --color-success: #22C956;
+                --color-error: #FF6B6B;
+                --color-warning: #FFA94D;
+                --color-focus-ring: rgba(63, 200, 220, 0.4);
+            }
+        }
+
+        [data-theme="dark"] {
+            --color-primary: #3FC8DC;
+            --color-primary-hover: #2DB8CC;
+            --color-primary-active: #1BA8BC;
+            --color-background: #0F1419;
+            --color-surface: #1A1F26;
+            --color-text: #E0E6ED;
+            --color-text-secondary: #9BA5B3;
+            --color-border: #2D333C;
+            --color-success: #22C956;
+            --color-error: #FF6B6B;
+            --color-warning: #FFA94D;
+            --color-focus-ring: rgba(63, 200, 220, 0.4);
+        }
+
+        [data-theme="light"] {
+            --color-primary: #21808D;
+            --color-primary-hover: #1D7480;
+            --color-primary-active: #1A6873;
+            --color-background: #FCF8F9;
+            --color-surface: #FFFFFF;
+            --color-text: #134252;
+            --color-text-secondary: #626C7C;
+            --color-border: #D8DCDF;
+            --color-success: #22C956;
+            --color-error: #C01530;
+            --color-warning: #A84B2F;
+            --color-focus-ring: rgba(33, 128, 141, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 14px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color-scheme: light dark;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            border-bottom: 2px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--color-primary), #1D7480);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .theme-toggle {
+            padding: 8px 12px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--color-primary);
+            background: var(--color-primary);
+            color: white;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            h1 {
+                background: linear-gradient(135deg, #3FC8DC, #2DB8CC);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+        }
+
+        .subtitle {
+            color: var(--color-text-secondary);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card h2 {
+            margin: 0 0 20px 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: var(--color-text);
+        }
+
+        .label-info {
+            font-size: 11px;
+            color: var(--color-text-secondary);
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--color-text);
+            background-color: var(--color-surface);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-focus-ring);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .operators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .operator-btn {
+            padding: 10px 12px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            color: var(--color-text);
+        }
+
+        .operator-btn:hover {
+            background: #F5F7F8;
+            border-color: var(--color-primary);
+        }
+
+        .operator-btn:active {
+            transform: scale(0.98);
+        }
+
+        .operator-btn strong {
+            display: block;
+            color: var(--color-primary);
+            margin-bottom: 2px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: var(--radius-base);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .btn-primary:active {
+            background: var(--color-primary-active);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--color-border);
+            color: var(--color-text);
+        }
+
+        .btn-secondary:hover {
+            background: #F5F7F8;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--color-focus-ring);
+        }
+
+        .query-display {
+            background: #F5F7F8;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            padding: 12px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            word-break: break-all;
+            color: var(--color-text);
+            min-height: 50px;
+            margin: 15px 0;
+            border-left: 3px solid var(--color-primary);
+            font-weight: 600;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .query-display {
+                background: #0F1419;
+            }
+        }
+
+        .empty-query {
+            color: var(--color-text-secondary);
+            font-style: italic;
+        }
+
+        .status-message {
+            padding: 10px 12px;
+            border-radius: var(--radius-base);
+            margin-top: 10px;
+            font-size: 12px;
+            display: none;
+        }
+
+        .status-message.show {
+            display: block;
+        }
+
+        .status-message.success {
+            background: rgba(34, 201, 86, 0.1);
+            color: #15A23C;
+            border: 1px solid rgba(34, 201, 86, 0.3);
+        }
+
+        .status-message.error {
+            background: rgba(192, 21, 47, 0.1);
+            color: var(--color-error);
+            border: 1px solid rgba(192, 21, 47, 0.3);
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 20px;
+            gap: 0;
+        }
+
+        .tab-btn {
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--color-text-secondary);
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: -1px;
+        }
+
+        .tab-btn:hover {
+            color: var(--color-text);
+        }
+
+        .tab-btn.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .help-section {
+            background: #F5F7F8;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .help-section h4 {
+            margin: 0 0 10px 0;
+            font-size: 13px;
+            color: var(--color-text);
+        }
+
+        .example-dork {
+            background: var(--color-surface);
+            border-left: 3px solid var(--color-warning);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 11px;
+            color: var(--color-text);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .example-dork:hover {
+            background: #F9F9F9;
+        }
+
+        .example-title {
+            font-weight: 600;
+            color: var(--color-warning);
+            margin-bottom: 4px;
+        }
+
+        .copy-button-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .copy-button-group button {
+            flex: 1;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            background: #F5F7F8;
+            padding: 10px;
+            border-radius: var(--radius-base);
+            font-size: 12px;
+        }
+
+        .stat-label {
+            color: var(--color-text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--color-primary);
+            font-size: 16px;
+        }
+
+        .examples-content {
+            display: none;
+        }
+
+        .examples-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>ezDorks</h1>
+                <p class="subtitle">Google Dorks OSINT Generator by gig4ndr3s</p>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">
+                <span id="themeIcon">🌙</span>
+            </button>
+        </header>
+
+        <div class="main-grid">
+            <!-- Left Panel: Input -->
+            <div class="card">
+                <h2>Generador de Queries</h2>
+
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('simple')">Modo Simple</button>
+                    <button class="tab-btn" onclick="switchTab('advanced')">Modo Avanzado</button>
+                </div>
+
+                <!-- SIMPLE MODE -->
+                <div id="simple" class="tab-content active">
+                    <div class="form-group">
+                        <label>Tipo de Búsqueda</label>
+                        <select id="searchType" onchange="updatePreview()">
+                            <option value="">-- Selecciona un tipo --</option>
+                            <option value="site">Buscar en un sitio específico</option>
+                            <option value="filetype">Buscar por tipo de archivo</option>
+                            <option value="intitle">Palabras en el título</option>
+                            <option value="inurl">Palabras en la URL</option>
+                            <option value="intext">Palabras en el contenido</option>
+                            <option value="custom">Combinado personalizado</option>
+                        </select>
+                    </div>
+
+                    <div id="simpleInputs">
+                        <div class="form-group">
+                            <label>Término principal</label>
+                            <input type="text" id="mainTerm" placeholder="ej: admin" onkeyup="updatePreview()">
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="secondaryInputDiv" style="display: none;">
+                        <label>Término secundario (opcional)</label>
+                        <input type="text" id="secondaryTerm" placeholder="ej: login" onkeyup="updatePreview()">
+                    </div>
+
+                    <button class="btn-secondary" onclick="addOperator('site:')">+ site:</button>
+                    <button class="btn-secondary" onclick="addOperator('-')">+ Excluir (-)</button>
+                    <button class="btn-secondary" onclick="addOperator('OR')">+ OR</button>
+                </div>
+
+                <!-- ADVANCED MODE -->
+                <div id="advanced" class="tab-content">
+                    <label>Operadores disponibles - Click para insertar</label>
+                    <div class="operators-grid">
+                        <div class="operator-btn" onclick="insertOperator('site:')">
+                            <strong>site:</strong>
+                            <span>Sitio específico</span>
+                        </div>
+                        <div class="operator-btn" onclick="insertOperator('intitle:')">
+                            <strong>intitle:</strong>
+                            <span>En el título</span>
+                        </div>
+                        <div class="operator-btn" onclick="insertOperator('allintitle:')">
+                            <strong>allintitle:</strong>
+                            <span>Todo en título</span>
+                        </div>
+                        <div class="operator-btn" onclick="insertOperator('inurl:')">
+                            <strong>inurl:</strong>
+                            <span>En la URL</span>
+                        </div>
+                        <div class="operator-btn" onclick="insertOperator('allinurl:')">
+                            <strong>allinurl:</strong>
+                            <span>Todo en URL</span>
+                        </div>
+                        <div class="operator-btn" onclick="insertOperator('intext:')">
+                            <strong>intext:</strong>
+                            <span>En el contenido</span>
+                        </div>
+                        <div class="operator-btn" onclick="insertOperator('allintext:')">
+                            <strong>allintext:</strong>
+                            <span>Todo en contenido</span>
+                        </div>
+                        <div class="operator-btn" onclick="insertOperator('filetype:')">
+                            <strong>filetype:</strong>
+                            <span>Tipo de archivo</span>
+                        </div>
+                        <div class="operator-btn" onclick="insertOperator('cache:')">
+                            <strong>cache:</strong>
+                            <span>Caché de Google</span>
+                        </div>
+                        <div class="operator-btn" onclick="insertOperator('link:')">
+                            <strong>link:</strong>
+                            <span>Enlaces a sitio</span>
+                        </div>
+                        <div class="operator-btn" onclick="insertOperator('\"')">
+                            <strong>\" \"</strong>
+                            <span>Frase exacta</span>
+                        </div>
+                        <div class="operator-btn" onclick="insertOperator('-')">
+                            <strong>-</strong>
+                            <span>Excluir</span>
+                        </div>
+                        <div class="operator-btn" onclick="insertOperator('OR')">
+                            <strong>OR</strong>
+                            <span>O lógico</span>
+                        </div>
+                        <div class="operator-btn" onclick="insertOperator('AND')">
+                            <strong>AND</strong>
+                            <span>Y lógico</span>
+                        </div>
+                        <div class="operator-btn" onclick="insertOperator('*')">
+                            <strong>*</strong>
+                            <span>Comodín</span>
+                        </div>
+                    </div>
+
+                    <label style="display: block; margin-top: 20px;">Query personalizada</label>
+                    <textarea id="advancedQuery" placeholder="Escribe tu query personalizada aquí..." onkeyup="updatePreview()"></textarea>
+                </div>
+            </div>
+
+            <!-- Right Panel: Output & Preview -->
+            <div class="card">
+                <h2>Query Generada</h2>
+
+                <div class="query-display" id="queryDisplay">
+                    <span class="empty-query">La query aparecerá aquí...</span>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Caracteres</div>
+                        <div class="stat-value" id="charCount">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Operadores</div>
+                        <div class="stat-value" id="operatorCount">0</div>
+                    </div>
+                </div>
+
+                <div class="copy-button-group">
+                    <button class="btn-primary" onclick="copyQuery()">📋 Copiar Query</button>
+                    <button class="btn-secondary" onclick="openGoogle()">🔍 Buscar en Google</button>
+                </div>
+
+                <button class="btn-secondary" style="width: 100%; margin-top: 10px;" onclick="clearAll()">🗑️ Limpiar todo</button>
+
+                <div class="status-message" id="statusMessage"></div>
+
+                <div class="tabs" style="margin-top: 20px; margin-bottom: 20px;">
+                    <button class="tab-btn active" onclick="switchOutputTab('query')">Query Generada</button>
+                    <button class="tab-btn" onclick="switchOutputTab('examples')">📚 Ejemplos</button>
+                </div>
+
+                <div id="query" class="tab-content active">
+                </div>
+
+                <div id="examples" class="tab-content">
+                    <div class="tabs" style="margin: -20px -20px 20px -20px; padding: 0 20px;">
+                        <button class="tab-btn active" onclick="switchExamplesTab('general')">General</button>
+                        <button class="tab-btn" onclick="switchExamplesTab('osint')">OSINT Avanzado</button>
+                    </div>
+
+                    <div id="general" class="examples-content active">
+                        <div class="help-section">
+                            <h4>💡 Ejemplos de Dorks populares</h4>
+                            <div class="example-dork" onclick="loadExample('site:github.com filetype:pdf')">
+                                <div class="example-title">PDFs en GitHub</div>
+                                site:github.com filetype:pdf
+                            </div>
+                            <div class="example-dork" onclick="loadExample('intitle:\"index of\" \"parent directory\"')">
+                                <div class="example-title">Directorios indexados</div>
+                                intitle:"index of" "parent directory"
+                            </div>
+                            <div class="example-dork" onclick="loadExample('inurl:login OR inurl:signin intitle:login')">
+                                <div class="example-title">Páginas de login</div>
+                                inurl:login OR inurl:signin intitle:login
+                            </div>
+                            <div class="example-dork" onclick="loadExample('site:.gov filetype:pdf \"confidential\"')">
+                                <div class="example-title">Documentos confidenciales .gov</div>
+                                site:.gov filetype:pdf "confidential"
+                            </div>
+                            <div class="example-dork" onclick="loadExample('inurl:.git inurl:config')">
+                                <div class="example-title">Repositorios Git expuestos</div>
+                                inurl:.git inurl:config
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="osint" class="examples-content">
+                        <div class="help-section">
+                            <h4>🕵️ OSINT & Espionaje Avanzado</h4>
+                            <div class="example-dork" onclick="loadExample('site:linkedin.com intitle:\"CEO\" OR intitle:\"CTO\"')">
+                                <div class="example-title">Ejecutivos en LinkedIn</div>
+                                site:linkedin.com intitle:"CEO" OR intitle:"CTO"
+                            </div>
+                            <div class="example-dork" onclick="loadExample('intitle:\"webcam\" OR intitle:\"network camera\" inurl:view')">
+                                <div class="example-title">Webcams expuestas</div>
+                                intitle:"webcam" OR intitle:"network camera" inurl:view
+                            </div>
+                            <div class="example-dork" onclick="loadExample('filetype:xls OR filetype:xlsx \"password\" OR \"user\"')">
+                                <div class="example-title">Hojas Excel con credenciales</div>
+                                filetype:xls OR filetype:xlsx "password" OR "user"
+                            </div>
+                            <div class="example-dork" onclick="loadExample('inurl:wp-admin OR inurl:administrator inurl:login')">
+                                <div class="example-title">Paneles administrativos expuestos</div>
+                                inurl:wp-admin OR inurl:administrator inurl:login
+                            </div>
+                            <div class="example-dork" onclick="loadExample('filetype:log inurl:access.log OR inurl:error.log')">
+                                <div class="example-title">Archivos de log públicos</div>
+                                filetype:log inurl:access.log OR inurl:error.log
+                            </div>
+                            <div class="example-dork" onclick="loadExample('intitle:\"AWS\" OR intitle:\"Amazon\" filetype:pdf')">
+                                <div class="example-title">Documentos AWS expuestos</div>
+                                intitle:"AWS" OR intitle:"Amazon" filetype:pdf
+                            </div>
+                            <div class="example-dork" onclick="loadExample('site:twitter.com OR site:instagram.com \"@\" filetype:pdf')">
+                                <div class="example-title">Social media en documentos</div>
+                                site:twitter.com OR site:instagram.com "@" filetype:pdf
+                            </div>
+                            <div class="example-dork" onclick="loadExample('\"email:\" OR \"user:\" filetype:sql')">
+                                <div class="example-title">Bases de datos SQL expuestas</div>
+                                "email:" OR "user:" filetype:sql
+                            </div>
+                            <div class="example-dork" onclick="loadExample('inurl:backup OR inurl:.bak OR inurl:.zip site:.gov')">
+                                <div class="example-title">Backups de sitios gubernamentales</div>
+                                inurl:backup OR inurl:.bak OR inurl:.zip site:.gov
+                            </div>
+                            <div class="example-dork" onclick="loadExample('\"api_key\" OR \"private_key\" OR \"secret\" filetype:txt')">
+                                <div class="example-title">Claves API públicas</div>
+                                "api_key" OR "private_key" OR "secret" filetype:txt
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+
+            updatePreview();
+        }
+
+        function switchOutputTab(tab) {
+            // Hide all output tab contents
+            document.querySelectorAll('#query, #examples').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.card .tab-btn').forEach(el => el.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function getQuery() {
+            const activeTab = document.querySelector('.tab-content.active');
+
+            if (activeTab.id === 'simple') {
+                return getSimpleQuery();
+            } else {
+                return document.getElementById('advancedQuery').value;
+            }
+        }
+
+        function getSimpleQuery() {
+            const searchType = document.getElementById('searchType').value;
+            const mainTerm = document.getElementById('mainTerm').value.trim();
+            const secondaryTerm = document.getElementById('secondaryTerm').value.trim();
+
+            if (!searchType || !mainTerm) return '';
+
+            let query = '';
+
+            switch(searchType) {
+                case 'site':
+                    query = `site:${mainTerm}`;
+                    if (secondaryTerm) query += ` ${secondaryTerm}`;
+                    break;
+                case 'filetype':
+                    query = `filetype:${mainTerm}`;
+                    if (secondaryTerm) query += ` ${secondaryTerm}`;
+                    break;
+                case 'intitle':
+                    query = `intitle:"${mainTerm}"`;
+                    if (secondaryTerm) query += ` "${secondaryTerm}"`;
+                    break;
+                case 'inurl':
+                    query = `inurl:${mainTerm}`;
+                    if (secondaryTerm) query += ` ${secondaryTerm}`;
+                    break;
+                case 'intext':
+                    query = `intext:"${mainTerm}"`;
+                    if (secondaryTerm) query += ` "${secondaryTerm}"`;
+                    break;
+                case 'custom':
+                    query = mainTerm;
+                    if (secondaryTerm) query += ` ${secondaryTerm}`;
+                    break;
+            }
+
+            return query;
+        }
+
+        function insertOperator(operator) {
+            const textarea = document.getElementById('advancedQuery');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+
+            let insertion = operator;
+            if (operator === '"') {
+                insertion = '""';
+            }
+
+            textarea.value = text.substring(0, start) + insertion + text.substring(end);
+            textarea.focus();
+            textarea.selectionStart = start + insertion.length;
+
+            updatePreview();
+        }
+
+        function addOperator(op) {
+            const searchType = document.getElementById('searchType');
+            if (!searchType.value && op !== '-' && op !== 'OR') {
+                searchType.focus();
+                return;
+            }
+
+            const mainTerm = document.getElementById('mainTerm').value.trim();
+            if (!mainTerm && op !== 'OR') {
+                document.getElementById('mainTerm').focus();
+                return;
+            }
+
+            // Switch to advanced mode and append
+            switchTab('advanced');
+            const textarea = document.getElementById('advancedQuery');
+            const current = getSimpleQuery();
+
+            if (current) {
+                if (op === '-') {
+                    textarea.value = current + ' -';
+                } else if (op === 'OR') {
+                    textarea.value = current + ' OR ';
+                } else {
+                    textarea.value = current + ' ' + op;
+                }
+            } else {
+                textarea.value = op;
+            }
+
+            textarea.focus();
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const query = getQuery();
+            const display = document.getElementById('queryDisplay');
+
+            if (query) {
+                display.textContent = query;
+                display.classList.remove('empty-query');
+            } else {
+                display.innerHTML = '<span class="empty-query">La query aparecerá aquí...</span>';
+            }
+
+            // Update stats
+            document.getElementById('charCount').textContent = query.length;
+
+            const operators = ['site:', 'intitle:', 'inurl:', 'intext:', 'filetype:', 'cache:', 'link:', 'allintitle:', 'allinurl:', 'allintext:', '-', 'OR', 'AND'];
+            let count = 0;
+            operators.forEach(op => {
+                const regex = new RegExp(op.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+                count += (query.match(regex) || []).length;
+            });
+            document.getElementById('operatorCount').textContent = count;
+        }
+
+        function copyQuery() {
+            const query = getQuery();
+
+            if (!query) {
+                showStatus('error', 'No hay query para copiar');
+                return;
+            }
+
+            navigator.clipboard.writeText(query).then(() => {
+                showStatus('success', '✓ Query copiada al portapapeles');
+                setTimeout(() => clearStatus(), 3000);
+            }).catch(() => {
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = query;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showStatus('success', '✓ Query copiada al portapapeles');
+                setTimeout(() => clearStatus(), 3000);
+            });
+        }
+
+        function openGoogle() {
+            const query = getQuery();
+
+            if (!query) {
+                showStatus('error', 'No hay query para buscar');
+                return;
+            }
+
+            const encodedQuery = encodeURIComponent(query);
+            window.open(`https://www.google.com/search?q=${encodedQuery}`, '_blank');
+        }
+
+        function loadExample(dork) {
+            document.getElementById('advancedQuery').value = dork;
+            switchTab('advanced');
+            updatePreview();
+            document.getElementById('queryDisplay').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function clearAll() {
+            document.getElementById('mainTerm').value = '';
+            document.getElementById('secondaryTerm').value = '';
+            document.getElementById('searchType').value = '';
+            document.getElementById('advancedQuery').value = '';
+            updatePreview();
+            showStatus('success', '✓ Todo limpiado');
+            setTimeout(() => clearStatus(), 2000);
+        }
+
+        function showStatus(type, message) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = `status-message show ${type}`;
+        }
+
+        function clearStatus() {
+            document.getElementById('statusMessage').classList.remove('show');
+        }
+
+        function switchExamplesTab(tab) {
+            // Hide all example contents
+            document.querySelectorAll('.examples-content').forEach(el => el.classList.remove('active'));
+            
+            // Hide all tab buttons and reset
+            const tabButtons = document.querySelectorAll('#examples .tabs .tab-btn');
+            tabButtons.forEach(el => el.classList.remove('active'));
+
+            // Show selected tab and set active button
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Theme toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            const newTheme = isDark ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('themeIcon');
+            icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function initTheme() {
+            const saved = localStorage.getItem('theme');
+            const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            const theme = saved || preferred;
+            
+            document.documentElement.setAttribute('data-theme', theme);
+            updateThemeIcon(theme);
+        }
+
+        // Initialize theme
+        initTheme();
+
+        // Initialize
+        document.getElementById('searchType').addEventListener('change', function() {
+            const secondaryDiv = document.getElementById('secondaryInputDiv');
+            if (this.value && this.value !== '') {
+                secondaryDiv.style.display = 'block';
+            } else {
+                secondaryDiv.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
